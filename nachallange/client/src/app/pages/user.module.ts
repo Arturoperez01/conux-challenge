@@ -20,7 +20,7 @@ import { MaterialModule } from '../material.module';
     UserComponent
   ],
   providers: [
-      UserService
+    UserService
   ]
 })
 export class UserModule { }

@@ -1,3 +1,21 @@
 
+<mat-toolbar> 
+    <a class="logo-wrapper waves-effect" href="#">
+            <img src="/assets/512px-HTML5_logo_and_wordmark.svg.png" class="img-fluid" alt="">
+        </a>My App
+</mat-toolbar>
+<mat-drawer-container class="example-container">
+  <mat-drawer mode="side" opened>
+        <a class="dropdown-item" routerLink="/">Tabla</a>
+  </mat-drawer>
+  <mat-drawer-content>
+      <router-outlet></router-outlet>
+      
+  </mat-drawer-content>
+    
+</mat-drawer-container>
 
-<router-outlet></router-outlet>
+<div class="footer">
+    Created by
+    <a href="https://www.skaffolder.com" target="_blank">&copy; Skaffolder</a>
+</div>

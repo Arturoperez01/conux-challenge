@@ -31,7 +31,7 @@ export class UserService {
     }
 
     update(user: User) {
-        return this.http.put(`${this.contextUrl}/` + user._id, user)
+        return this.http.post(`${this.contextUrl}/` + user._id, user)
         .pipe(map(data => data));
     }
 
