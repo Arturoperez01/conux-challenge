@@ -1,0 +1,195 @@
+
+<mat-card class="m-5">
+<!-- TITLE -->
+    <mat-card-title>
+        <h1>Listado de Proyectos</h1>
+    </mat-card-title>
+
+    <mat-card-content>
+
+<!-- TABLE LIST -->
+
+    <div class="col-md-6">
+        
+    <h3>Listado de Proyectos</h3>
+    <form #editForm="ngForm" *ngIf="proyecto">
+                <div class="form-group">
+                    <label for="NombreProyecto">Nombre Proyecto</label>
+                    <input type="text" class="form-control" id="NombreProyecto" [(ngModel)]="proyecto.NombreProyecto" name="NombreProyecto" #NombreProyecto="ngModel" required>
+                </div>
+                <div class="form-group">
+                    <label for="Tipologia">Name</label>
+                    <input type="text" class="form-control" id="Tipologia" [(ngModel)]="proyecto.Tipologia" name="Tipologia" #Tipologia="ngModel" required>
+                </div>
+                <div class="form-group">
+                    <label for="TipoProyecto">Tipo Proyecto</label>
+                    
+                    <select class="form-control" id="TipoProyecto" [(ngModel)]="proyecto.TipoProyecto" name="TipoProyecto" #Estado="ngModel" required>
+                        <option value="" selected>Selecciona un tipo</option>
+                        <option *ngFor="let tipo of tipos" >
+                            {{ tipo }}
+                        </option>
+                    </select>
+                    <!--input type="number" class="form-control" id="TipoProyecto" [(ngModel)]="proyecto.TipoProyecto" name="TipoProyecto" #TipoProyecto="ngModel" required-->
+                </div>
+                <div class="form-group">
+                    <label for="FechaIngreso">Fecha Ingreso</label>
+                    <input type="date"  class="form-control" id="FechaIngreso" [(ngModel)]="proyecto.FechaIngreso" name="FechaIngreso" #FechaIngreso="ngModel" required>
+                </div>
+                <div class="form-group">
+                    <label for="Estado">Estado</label>
+                    
+                <select class="form-control" id="Estado" [(ngModel)]="proyecto.Estado" name="Estado" #Estado="ngModel" required>
+                <option value="" selected>Selecciona un estado</option>
+                <option *ngFor="let estado of estados" >
+                    {{ estado }}
+                </option>
+                </select>
+                
+                </div>
+        <button class="btn btn-primary pull-right mx-1" color="primary" [disabled]="editForm.invalid" (click)="save()">
+            <span>
+                <i class="fa fa-plus"></i> Buscar
+            </span>
+        </button>
+    </form>
+    </div> 
+
+    <div class="col-md-6">
+
+        <h3>Crear de Proyectos</h3>
+        <div class="form-group">
+                <label for="Tipologia">Tipologia</label>
+                
+            <select class="form-control" id="Tipologia" [(ngModel)]="proyecto.Tipologia" name="Tipologia" #Tipologia="ngModel" required>
+            <option value="" selected>Selecciona un Tipologia</option>
+            <option *ngFor="let Tipologia of Tipologias" >
+                {{ Tipologia }}
+            </option>
+            </select>
+            
+        </div>
+        <button class="btn btn-primary pull-right mx-1" color="primary" [disabled]="editForm.invalid" (click)="save()">
+            <span>
+                <i class="fa fa-plus"></i> Crear Proyecto
+            </span>
+        </button>
+    </div>
+    <br>
+<h1 class="p-3 mb-5 mt-5 text-center" *ngIf="list.length==0">
+        No related data in the database
+</h1>
+<table class="table table-hover" *ngIf="list.length != 0">
+    <thead>
+        <tr>
+            <!-- Codigo,	NombreProyecto,	Region,	Tipologia,	TipoProyecto,	FechaIngreso,	Estado -->
+            <th>Codigo</th>
+            <th>NombreProyecto</th>
+            <th>Tipologia</th>
+            <th>TipoProyecto</th>
+            <th>FechaIngreso</th>
+            <th>Estado</th>
+            <th>Accion</th>
+        </tr>
+    </thead>
+    <tbody>
+       <tr *ngFor="let proyecto of list" (click)="getproyecto(proyecto._id)">
+            <td>{{proyecto.NombreProyecto }}</td>
+            <td>{{proyecto.Tipologia}}</td>
+            <td>{{proyecto.TipoProyecto }}</td>
+            <td>{{proyecto.FechaIngreso }}</td>
+            <td>{{proyecto.Estado }}</td>
+            <td> 
+                <div class=" btn-group">
+                    
+                    <button class="btn btn-info boton boton-borde boton-resaltar" *ngIf="acceso.permisos[0].show_permission == 'SI'" [routerLink]="['show',l.id]" title="Ver"><i class="fa fa-eye"></i></button>
+                    <button class="btn btn-success boton boton-borde boton-resaltar" *ngIf="acceso.permisos[0].edit_permission == 'SI'" [routerLink]="['edit',l.id]" title="Editar"><i class="fas fa-file"></i></button>
+                    <button *ngIf="acceso.permisos[0].delete_permission == 'SI'" class="btn btn-danger boton boton-borde boton-resaltar" (click)='del(l.id)' title="Eliminar"><i class="fas fa-file"></i></button>
+
+                    <button *ngIf="l.estadoEvento=='Activo'&&acceso.permisos[0].delete_permission == 'SI'" class="btn btn-warning boton boton-borde boton-resaltar" (click)='disable(l.id)' title="Deshabilitar"><i class="fa fa-thumbs-down"></i></button>
+                    <button *ngIf="l.estadoEvento!='Activo'&&acceso.permisos[0].delete_permission == 'SI'" class="btn btn-warning boton boton-borde boton-resaltar" (click)='disable(l.id)' title="Habilitar"><i class="fa fa-thumbs-up"></i></button>
+                    
+                    <button class="btn btn-info boton boton-borde boton-resaltar" [routerLink]="['/home/freelancer','fr_asistencia',l.id]" *ngIf="l.postulaciones!=0&&acceso.permisos[0].show_permission == 'SI'" title="Ver asistencias"><i class="fa fa-clipboard"></i></button>
+                    <button class="btn btn-default  boton boton-resaltar boton-borde"  *ngIf="l.postulaciones==0">Sin asistencias</button>
+                </div> 
+            </td>
+        </tr>
+    </tbody>
+</table>
+        <!-- form #editForm="ngForm" *ngIf="proyecto">
+            <div class="row justify-content-md-center">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="NombreProyecto">Nombre Proyecto</label>
+                        <input type="text" class="form-control" id="NombreProyecto" [(ngModel)]="proyecto.NombreProyecto" name="NombreProyecto" #NombreProyecto="ngModel" required>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="Tipologia">Name</label>
+                        <input type="text" class="form-control" id="Tipologia" [(ngModel)]="proyecto.Tipologia" name="Tipologia" #Tipologia="ngModel" required>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="TipoProyecto">Tipo Proyecto</label>
+                        <input type="number" class="form-control" id="TipoProyecto" [(ngModel)]="proyecto.TipoProyecto" name="TipoProyecto" #TipoProyecto="ngModel" required>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="FechaIngreso">Fecha Ingreso</label>
+                        <input type="number" class="form-control" id="FechaIngreso" [(ngModel)]="proyecto.FechaIngreso" name="FechaIngreso" #FechaIngreso="ngModel" required>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="Estado">Estado</label>
+                        
+                    <select class="form-control" id="Estado" [(ngModel)]="proyecto.Estado" name="Estado" #Estado="ngModel" required>
+                    <option value="" selected>Selecciona un estado</option>
+                    <option *ngFor="let estado of estados" >
+                        {{ estado }}
+                    </option>
+                    </select>
+                    
+                    </div>
+                </div>
+            </div>
+                    
+        <button class="btn btn-primary pull-right mx-1" color="primary" [disabled]="editForm.invalid" (click)="save()">
+            <span *ngIf="!proyecto._id" >
+                <i class="fa fa-plus"></i> ADD
+            </span>
+            <span *ngIf="proyecto._id" >
+                <i class="fa fa-edit"></i> Update
+            </span>
+        </button>
+        
+        <button class="btn btn-primary pull-right mx-1" color="primary" *ngIf="proyecto._id" (click)="delete()">
+                <span >
+                    <i class="fa fa-minus"></i> Delete
+                </span>
+            </button>
+        </form-->
+    </mat-card-content>
+</mat-card>
+
+
+<!--div class="modal modal-danger fade" id="modal-danger" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span></button>
+            <h4 class="modal-title"></h4>
+        </div>
+        <div class="modal-body">
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
+            <button type="button" class="btn btn-outline" (click)="confirmDelete()">Eliminar</button>
+        </div>
+        </div>
+    </div>
+</div-->
